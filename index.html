@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Live Camera App</title>
+    <style>
+        #camera-stream {
+            width: 100%;
+            max-width: 640px;
+            height: auto;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #capture-btn {
+            display: block;
+            width: 80px;
+            height: 80px;
+            border: none;
+            border-radius: 50%;
+            background-color: #007BFF;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 20px auto;
+            cursor: pointer;
+        }
+
+        #canvas {
+            display: none; /* Hide canvas until a photo is captured */
+        }
+    </style>
+</head>
+<body>
+    <h1>Live Camera App</h1>
+    <video id="camera-stream" autoplay playsinline></video>
+    <button id="capture-btn">Take Photo</button>
+    <canvas id="canvas" width="640" height="480"></canvas>
+
+    <script>
+        const video = document.getElementById('camera-stream');
+        const canvas = document.getElementById('canvas');
+        const captureButton = document.getElementById('capture-btn');
+        const ctx = canvas.getContext('2d');
+
+        // Get user media (simulated camera stream)
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then((stream) => {
+                video.srcObject = stream;
+            })
+            .catch((error) => {
+                console.error('Error accessing the camera: ', error);
+            });
+
+        // Capture photo from the video stream
+        captureButton.addEventListener('click', () => {
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const dataURL = canvas.toDataURL('image/png'); // Base64-encoded image data
+            // Here, you can do something with the captured photo, like displaying it or saving it.
+            // For demonstration purposes, let's display it in a new window.
+            const newWindow = window.open('', '_blank');
+            newWindow.document.write('<img src="' + dataURL + '" alt="Captured Photo">');
+        });
+    </script>
+</body>
+</html>
